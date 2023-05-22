@@ -1,6 +1,6 @@
 # Really Optimized English (Concept)
 
-![](/roe/layout-hd.png)
+![](https://github.com/CarrieForle/really-optimized-english/assets/53133715/ba05772a-2144-490f-b4fa-d3e74eb3f9b2)
 
 A keyboard layout aimed for typing English as fast as posstble, which don't take the compatibility to other languages and shortcut friendliness into account.
 
