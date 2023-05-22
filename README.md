@@ -2,7 +2,10 @@
 
 ![](/roe/layout-hd.png)
 
-A keyboard layout aimed for typing English as fast as posstble, which don't take the compatibility to other languages and shortcut friendliness into account.  
+A keyboard layout aimed for typing English as fast as posstble, which don't take the compatibility to other languages and shortcut friendliness into account.
+
+---
+
 The key placement is heavily based on [first20hours/google-10000-english](https://github.com/first20hours/google-10000-english).
 
 ## Download
