@@ -11,6 +11,9 @@ The key placement is heavily based on [first20hours/google-10000-english](https:
 ## Download
 [PKL](https://github.com/CarrieForle/really-optimized-english/releases/latest/download/roe.zip)
 
+## Install
+You need to download the latest version of [Portable Keyboard Layout](https://github.com/Portable-Keyboard-Layout/Portable-Keyboard-Layout). Extract `roe.zip` and put the extracted folder to `/layouts/` in PKL. Change to the line `layout = roe` in `pkl.ini` in PKL.
+
 ## How is this _optimized_?
 idk why ask
 
