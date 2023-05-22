@@ -10,3 +10,6 @@ The key placement is heavily based on [first20hours/google-10000-english](https:
 
 ## How is this _optimized_?
 idk why ask
+
+## Why ANSI?
+I'm using ANSI.
