@@ -14,8 +14,8 @@ The current layout is putting into test by me. Feel free to suggest your idea fo
 ## Install
 You need to download the latest version of [Portable Keyboard Layout](https://github.com/Portable-Keyboard-Layout/Portable-Keyboard-Layout) if you haven't. Extract `roe.zip` and put the extracted folder to `/layouts/` in PKL. Open `pkl.ini` in PKL and change to the line `layout = roe`.
 
-## How is this _optimized_?
-idk why ask
+## How is this _optimized?_
+TO-DO
 
 ## Why ANSI?
 I'm using ANSI.
