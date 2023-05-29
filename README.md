@@ -1,4 +1,4 @@
-# XARTY - a ecgonomic layout attempt (Concept)
+# XARTY - an ecgonomic layout attempt (Concept)
 
 ![](https://github.com/CarrieForle/really-optimized-english/assets/53133715/ba05772a-2144-490f-b4fa-d3e74eb3f9b2)
 
