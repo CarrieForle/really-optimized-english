@@ -9,10 +9,10 @@ The key placement is heavily based on [first20hours/google-10000-english](https:
 The current layout is putting into test by me. Feel free to suggest your idea for change in [Discussion](https://github.com/CarrieForle/really-optimized-english/discussions).
 
 ## Download
-[PKL](https://github.com/CarrieForle/really-optimized-english/releases/latest/download/roe.zip)
+[PKL](https://github.com/CarrieForle/really-optimized-english/releases/latest/download/xarty.zip)
 
 ## Install
-You need to download the latest version of [Portable Keyboard Layout](https://github.com/Portable-Keyboard-Layout/Portable-Keyboard-Layout) if you haven't. Extract `xarty.zip` and put the extracted folder to `/layouts/` in PKL. Open `pkl.ini` in PKL and change to the line `layout = roe`.
+You need to download the latest version of [Portable Keyboard Layout](https://github.com/Portable-Keyboard-Layout/Portable-Keyboard-Layout) if you haven't. Extract `xarty.zip` and put the extracted folder to `/layouts/` in PKL. Open `pkl.ini` in PKL and change to the line `layout = xarty`.
 
 ## Why is ths layout *like this?*
 1. Typing with pinkies is **awful**, so this is a six-finger (index, middle, ring) dominant layout.
