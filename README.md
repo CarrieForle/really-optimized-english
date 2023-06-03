@@ -7,7 +7,8 @@ xarty is x keyboard layout aimed for typing English in a comfortable and quick m
 The key placement is heavily based on [first20hours/google-10000-english](https://github.com/first20hours/google-10000-english).
 
 ## Download
-[PKL](https://github.com/CarrieForle/really-optimized-english/releases/latest/download/xarty.zip)
+[PKL](https://github.com/CarrieForle/really-optimized-english/releases/latest/download/xarty.zip)<br>
+(layout installer coming soon)
 
 ## Install
 You need to download the latest version of [Portable Keyboard Layout](https://github.com/Portable-Keyboard-Layout/Portable-Keyboard-Layout) if you haven't. Extract `xarty.zip` and put the extracted folder to `/layouts/` in PKL. Open `pkl.ini` in PKL and change to the line `layout = xarty`.
