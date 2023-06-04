@@ -2,7 +2,7 @@
 
 ![](https://github.com/CarrieForle/really-optimized-english/assets/53133715/ba05772a-2144-490f-b4fa-d3e74eb3f9b2)
 
-xarty is x keyboard layout aimed for typing English in a comfortable and quick manner, which doesn't take the compatibility to other languages and shortcut friendliness into account.<br> 
+xarty is a keyboard layout aimed for typing English in a comfortable and quick manner, which doesn't take the compatibility to other languages and shortcut friendliness into account.<br> 
 <br>
 The key placement is heavily based on [first20hours/google-10000-english](https://github.com/first20hours/google-10000-english).
 
