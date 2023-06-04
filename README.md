@@ -1,6 +1,6 @@
 # XARTY - an ecgonomic layout attempt
 
-![](https://github.com/CarrieForle/really-optimized-english/assets/53133715/ba05772a-2144-490f-b4fa-d3e74eb3f9b2)
+![XARTY the keyboard layout](https://github.com/CarrieForle/really-optimized-english/assets/53133715/ba05772a-2144-490f-b4fa-d3e74eb3f9b2)
 
 xarty is a keyboard layout aimed for typing English in a comfortable and quick manner, which doesn't take the compatibility to other languages and shortcut friendliness into account.<br> 
 <br>
