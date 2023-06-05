@@ -1,17 +1,16 @@
-# XARTY - an ecgonomic layout attempt
+# Xarty - an ecgonomic layout attempt
 
-![XARTY the keyboard layout](https://github.com/CarrieForle/really-optimized-english/assets/53133715/ba05772a-2144-490f-b4fa-d3e74eb3f9b2)
+![Xarty the keyboard layout](https://github.com/CarrieForle/xarty/assets/53133715/ba05772a-2144-490f-b4fa-d3e74eb3f9b2)
 
-xarty is a keyboard layout aimed for typing English in a comfortable and quick manner, which doesn't take the compatibility to other languages and shortcut friendliness into account.<br> 
+Xarty is a keyboard layout aimed for typing English in a comfortable and quick manner, which doesn't take the compatibility to other languages and shortcut friendliness into account.<br> 
 <br>
 The key placement is heavily based on [first20hours/google-10000-english](https://github.com/first20hours/google-10000-english).
 
 ## Downloads
-[PKL](https://github.com/CarrieForle/really-optimized-english/releases/latest/download/xarty.zip)<br>
-(layout installer coming soon)
+See [Releases](https://github.com/CarrieForle/xarty/releases).
 
 ## Installing
-You need to download the latest version of [Portable Keyboard Layout](https://github.com/Portable-Keyboard-Layout/Portable-Keyboard-Layout) if you haven't. Extract `xarty.zip` and put the extracted folder to `/layouts/` in PKL. Open `pkl.ini` in PKL and change to the line `layout = xarty`.
+See [Wiki](https://github.com/CarrieForle/xarty/wiki/How-to-install).
 
 ## Why is the layout *like this?*
 1. Typing with pinkies is **awful**, so this is a six-finger (index, middle, ring) dominant layout.
