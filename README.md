@@ -2,6 +2,13 @@
 
 ![Xarty the keyboard layout](https://github.com/CarrieForle/xarty/assets/53133715/ba05772a-2144-490f-b4fa-d3e74eb3f9b2)
 
+```
+` 1 2 3 4 5 6 7 8 9 0 - = 
+   V H S G B J M O U ; [ ] \
+    X A R T Y K N E I W '
+     Z F L D Q C P , . /
+```
+
 Xarty is a keyboard layout aimed for typing English in a comfortable and quick manner, which doesn't take the compatibility to other languages and shortcut friendliness into account.<br> 
 <br>
 The key placement is heavily based on [first20hours/google-10000-english](https://github.com/first20hours/google-10000-english).
