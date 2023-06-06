@@ -1,0 +1,26 @@
+﻿q::v
+w::h
+e::s
+r::g
+t::b
+y::j
+u::m
+i::o
+o::u
+p::sc027
+a::x
+s::a
+d::r
+f::t
+g::y
+h::k
+j::n
+k::e
+l::i
+sc027::w ; semicolon -> w
+x::f
+c::l
+v::d
+b::q
+n::c
+m::p
