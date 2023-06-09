@@ -26,3 +26,9 @@ See [Wiki](https://github.com/CarrieForle/xarty/wiki/How-to-install).
 
 ## Why ANSI?
 I'm using ANSI.
+
+## TO-DO
+- Make an AHK script (that support extend layer, compose) for the layout
+- Update Wiki with more details
+- Update reasoning for layout arrangement better (sorry I suck at English)
+- Find potential improvement for the layout with fewest change possible
