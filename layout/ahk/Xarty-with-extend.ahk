@@ -34,19 +34,16 @@ else
 Numpad0::debug isEnteringExtendLayer1
 Numpad1::debug isEnteringExtendLayer2
 
-~CapsLock up::
-{
-	;debug "off"
-	global isEnteringExtendLayer1 := false
-	global isEnteringExtendLayer2 := false
-}
-
 CapsLock & Shift::
 +CapsLock::
 {
-	;debug "on"
 	global isEnteringExtendLayer1 := true
-	KeyWait "CapsLock"
+}
+
+~*CapsLock up::
+{
+	global isEnteringExtendLayer1 := false
+	global isEnteringExtendLayer2 := false
 }
 
 sc029::`
@@ -97,19 +94,10 @@ sc033::,
 sc034::.
 sc035::/
 
-HoldCapLocksWithKey(key) {
-	SetKeyDelay -1
-	if GetKeyState("CapsLock", "T")
-		SetCapsLockState "AlwaysOff"
-	else
-		SetCapsLockState "AlwaysOn"
-	KeyWait key
-}
-
 HoldKey(key) {
 	SetKeyDelay -1
-	Send "{Blind}{" key " Down}"
-	KeyWait key, "L"
+	if !GetKeyState(key)
+		Send "{Blind}{" key " DownR}"
 }
 
 HoldKeyRemap(key) {
@@ -126,8 +114,8 @@ HoldKeyWithFunc(key, function) {
 
 #HotIf !isEnteringExtendLayer1 && !isEnteringExtendLayer2
 
-CapsLock & Esc::HoldCapLocksWithKey "Esc"
-CapsLock & Esc up::Send "{blind}{Esc Up}"
+CapsLock & Esc::HoldKey "CapsLock"
+CapsLock & Esc up::Send "{blind}{CapsLock Up}"
 CapsLock & F1::HoldKey "Media_Play_Pause"
 CapsLock & F1 up::Send "{blind}{Media_Play_Pause Up}"
 CapsLock & F2::HoldKey "Media_Prev"
