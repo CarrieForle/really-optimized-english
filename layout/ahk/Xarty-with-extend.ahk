@@ -1,14 +1,13 @@
-﻿#Requires AutoHotkey >= 2
-
+#Requires AutoHotkey >= 2
 debug := MsgBox
 
 extendKey := "CapsLock"
 extendLayer1Key := "Shift"
 extendLayer2Key := "Ctrl"
-
+intervalAllowedForExtendLayerActivation := 150
+timeSincePressed := -intervalAllowedForExtendLayerActivation - 1
 isEnteringExtendLayer1 := false
 isEnteringExtendLayer2 := false
-holdingKeys := 0
 
 ; #SuspendExempt
 ; RAlt & LAlt::
@@ -33,18 +32,57 @@ else
 
 Numpad0::debug isEnteringExtendLayer1
 Numpad1::debug isEnteringExtendLayer2
+NumpadMult::KeyHistory
+NumpadDiv::debug A_TickCount - timeSincePressed
 
+#HotIf GetKeyState("CapsLock")
+	; EPKL has support for layer 4, 
+	; but seriously, why do we need that many layers?
+	Shift & Ctrl::return
+	Ctrl & Shift::return
+	global isEnteringExtendLayer1 := false
+	global isEnteringExtendLayer2 := false
+
+#HotIf !GetKeyState("Ctrl")
 CapsLock & Shift::
 +CapsLock::
 {
 	global isEnteringExtendLayer1 := true
+	global isEnteringExtendLayer2 := false
 }
 
+#HotIf (A_PriorKey == "LShift" || A_PriorKey == "RShift") && A_TickCount - timeSincePressed <= intervalAllowedForExtendLayerActivation
+CapsLock::
+{
+	global isEnteringExtendLayer1 := true
+	global isEnteringExtendLayer2 := false
+}
+
+#HotIf !GetKeyState("Shift")
+CapsLock & Ctrl::
+^CapsLock::
+{
+	global isEnteringExtendLayer1 := false
+	global isEnteringExtendLayer2 := true
+}
+
+#HotIf (A_PriorKey == "LControl" || A_PriorKey == "RControl") && A_TickCount - timeSincePressed <= intervalAllowedForExtendLayerActivation
+CapsLock::
+{
+	global isEnteringExtendLayer1 := false
+	global isEnteringExtendLayer2 := true
+}
+
+#HotIf
+^+CapsLock::
 ~*CapsLock up::
 {
 	global isEnteringExtendLayer1 := false
 	global isEnteringExtendLayer2 := false
 }
+
+Ctrl::
+Shift::global timeSincePressed := A_TickCount
 
 sc029::`
 sc002::1
@@ -84,6 +122,7 @@ sc026::i
 sc027::w
 sc028::'
 ;'
+sc02c::z
 sc02d::f
 sc02e::l
 sc02f::d
@@ -98,18 +137,6 @@ HoldKey(key) {
 	SetKeyDelay -1
 	if !GetKeyState(key)
 		Send "{Blind}{" key " DownR}"
-}
-
-HoldKeyRemap(key) {
-	SetKeyDelay -1
-	Send "{Blind}{" key " DownR}"
-	KeyWait key, "L"
-}
-
-HoldKeyWithFunc(key, function) {
-	SetKeyDelay -1
-	function()
-	KeyWait key, "L"
 }
 
 #HotIf !isEnteringExtendLayer1 && !isEnteringExtendLayer2
@@ -180,30 +207,113 @@ CapsLock & sc02c::^z
 CapsLock & sc02d::^x
 CapsLock & sc02e::^c
 CapsLock & sc02f::^v
-CapsLock & sc030::LButton
+CapsLock & sc030::Ins
 
-CapsLock & sc031::MButton
-CapsLock & sc032::RButton
-CapsLock & sc033::MouseMove -42, 0,, "R"
-CapsLock & sc034::MouseMove 42, 0,, "R"
-CapsLock & sc035::Ins
+CapsLock & sc031::LButton
+CapsLock & sc032::MButton
+CapsLock & sc033::RButton
+CapsLock & sc034::MouseMove -42, 0,, "R"
+CapsLock & sc035::MouseMove 42, 0,, "R"
 
 CapsLock & Enter::^BackSpace
 CapsLock & Space::Enter
 
-
-
 #HotIf isEnteringExtendLayer1
+sc002::!
+sc003::@
+sc004::#
+sc005::$
+sc006::%
+sc007::^
+sc008::Numpad7
+sc009::Numpad8
+sc00a::Numpad9
+sc00b::NumpadMult
+sc00c::NumpadSub
+sc00d::=
+sc010::Home
+sc011::Up
+sc012::End
+sc013::Del
+sc014::Esc
+sc015::PgUp
+sc016::Numpad4
+sc017::Numpad5
+sc018::Numpad6
+sc019::NumpadAdd
+sc01a::(
+sc01b::)
+sc02b::,
+sc01e::Left
+sc01f::Down
+sc020::Right
+sc021::Backspace
+sc022::NumLock
+sc023::PgDn
+sc024::Numpad1
+sc025::Numpad2
+sc026::Numpad3
+sc027::NumpadEnter
+sc028::'
+;'
+sc02c::^z
+sc02d::^x
+sc02e::^c
+sc02f::^v
+sc030::LButton
+sc031:::
+sc032::Numpad0
+sc033::Numpad0
+sc034::NumpadDot
+sc035::NumpadDiv
 
-	sc002::!
-	sc003::@
-	sc004::#
-	sc005::$
-	sc006::%
-	sc007::^
-	sc008::Numpad7
-	sc009::Numpad8
-	sc00a::Numpad9
-	sc00b::NumpadMult
-	sc00c::NumpadSub
-	sc00d::=
+#HotIf isEnteringExtendLayer2
+sc029::return
+sc002::return
+sc003::return
+sc004::return
+sc005::return
+sc006::return
+sc007::return
+sc008::return
+sc009::return
+sc00a::return
+sc00b::return
+sc00c::return
+sc00d::return
+sc010::[
+sc011::]
+sc012::~
+sc013::return
+sc014::return
+sc015::return
+sc016::'
+;'
+sc017::"
+; "
+sc018::\
+sc019::return
+sc01a::return
+sc01b::return
+sc02b::return
+sc01e::(
+sc01f::)
+sc020::`
+sc021::return
+sc022::return
+sc023::return
+sc024::`{
+sc025::}
+sc026::%
+sc027::!
+sc028::return
+sc02c::&
+sc02d::|
+sc02e::*
+sc02f::return
+sc030::return
+sc031::return
+sc032::+
+sc033::-
+sc034::=
+sc035::return
