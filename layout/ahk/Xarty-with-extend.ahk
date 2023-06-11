@@ -1,15 +1,19 @@
-﻿#Requires AutoHotkey >= 2
+#Requires AutoHotkey >= 2
 A_MaxHotkeysPerInterval := 150
 A_HotkeyInterval := 1000
+SetMouseDelay 1
+SetDefaultMouseSpeed 2
+SetKeyDelay -1
+ProcessSetPriority "A"
 
 ; extendKey := "CapsLock"
 ; extendLayer1Key := "Shift"
 ; extendLayer2Key := "Ctrl"
-intervalAllowedForComposeValidation := 2000
-timeSinceLastKey := -intervalAllowedForComposeValidation - 1
-intervalAllowedForExtendLayerActivation := 150
-timeSinceExtendPrestart := -intervalAllowedForExtendLayerActivation - 1
-isEnteringExtendLayer1 := false
+intervalAllowedForComposeValidation := 2000,
+timeSinceLastKey := -intervalAllowedForComposeValidation - 1,
+intervalAllowedForExtendLayerActivation := 150,
+timeSinceExtendPrestart := -intervalAllowedForExtendLayerActivation - 1,
+isEnteringExtendLayer1 := false,
 isEnteringExtendLayer2 := false
 
 if FileExist("compose.ini") == ""
@@ -38,7 +42,7 @@ for val in composeKeypairArray
 	}
 	wordList.Set keypair[1], keypair[2]
 }
-composeKeypairArray := ""
+VarSetStrCapacity(&composeKeypairArray, 0)
 
 #SuspendExempt
 RAlt & LAlt::
@@ -62,47 +66,55 @@ else
 	SetCapsLockState "AlwaysOff"
 
 #HotIf GetKeyState("CapsLock")
-	Shift & Ctrl::return
-	Ctrl & Shift::return
-	global isEnteringExtendLayer1 := false
-	global isEnteringExtendLayer2 := false
+Shift & Ctrl::
+Ctrl & Shift::
+{
+	global
+	isEnteringExtendLayer1 := false,
+	isEnteringExtendLayer2 := false
+}
 
 #HotIf !GetKeyState("Ctrl")
 CapsLock & Shift::
 +CapsLock::
 {
-	global isEnteringExtendLayer1 := true
-	global isEnteringExtendLayer2 := false
+	global
+	isEnteringExtendLayer1 := true,
+	isEnteringExtendLayer2 := false
 }
 
 #HotIf (A_PriorKey == "LShift" || A_PriorKey == "RShift") && A_TickCount - timeSinceExtendPrestart <= intervalAllowedForExtendLayerActivation
 CapsLock::
 {
-	global isEnteringExtendLayer1 := true
-	global isEnteringExtendLayer2 := false
+	global
+	isEnteringExtendLayer1 := true,
+	isEnteringExtendLayer2 := false
 }
 
 #HotIf !GetKeyState("Shift")
 CapsLock & Ctrl::
 ^CapsLock::
 {
-	global isEnteringExtendLayer1 := false
-	global isEnteringExtendLayer2 := true
+	global
+	isEnteringExtendLayer1 := false,
+	isEnteringExtendLayer2 := true
 }
 
 #HotIf (A_PriorKey == "LControl" || A_PriorKey == "RControl") && A_TickCount - timeSinceExtendPrestart <= intervalAllowedForExtendLayerActivation
 CapsLock::
 {
-	global isEnteringExtendLayer1 := false
-	global isEnteringExtendLayer2 := true
+	global
+	isEnteringExtendLayer1 := false,
+	isEnteringExtendLayer2 := true
 }
 
 #HotIf
 ^+CapsLock::
 ~*CapsLock up::
 {
-	global isEnteringExtendLayer1 := false
-	global isEnteringExtendLayer2 := false
+	global
+	isEnteringExtendLayer1 := false,
+	isEnteringExtendLayer2 := false
 }
 
 Ctrl::
@@ -182,7 +194,7 @@ CapsLock & F7::Volume_Up
 CapsLock & F8::HoldKey "Launch_Media"
 CapsLock & F8 up::Send "{blind}{Launch_Media Up}"
 
-CapsLock & sc029::SendEvent "{Click 16 96}"
+CapsLock & sc029::SendEvent "{Click 16 96 0}"
 CapsLock & sc002::F1
 CapsLock & sc003::F2
 CapsLock & sc004::F3
@@ -395,15 +407,12 @@ onKeyDown(ih, vk, sc)
 onEnd(ih)
 {
 	global oldBuffer
-	if ih.EndReason == "Stopped"
-		oldBuffer := ""
-	else
-		oldBuffer := ih.Input
+	oldBuffer := ih.EndReason == "Stopped" ? "" : ih.Input
 	ih.Start()
 }
 
-ih.OnKeyDown := onKeyDown
-ih.OnEnd := onEnd
+ih.OnKeyDown := onKeyDown,
+ih.OnEnd := onEnd,
 ih.OnChar := onChar
 ih.KeyOpt("{backspace}", "N")
 ih.Start()
