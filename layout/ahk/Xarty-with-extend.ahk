@@ -1,43 +1,67 @@
-#Requires AutoHotkey >= 2
-debug := MsgBox
+﻿#Requires AutoHotkey >= 2
+A_MaxHotkeysPerInterval := 150
+A_HotkeyInterval := 1000
 
-extendKey := "CapsLock"
-extendLayer1Key := "Shift"
-extendLayer2Key := "Ctrl"
+; extendKey := "CapsLock"
+; extendLayer1Key := "Shift"
+; extendLayer2Key := "Ctrl"
+intervalAllowedForComposeValidation := 2000
+timeSinceLastKey := -intervalAllowedForComposeValidation - 1
 intervalAllowedForExtendLayerActivation := 150
-timeSincePressed := -intervalAllowedForExtendLayerActivation - 1
+timeSinceExtendPrestart := -intervalAllowedForExtendLayerActivation - 1
 isEnteringExtendLayer1 := false
 isEnteringExtendLayer2 := false
 
-; #SuspendExempt
-; RAlt & LAlt::
-; LAlt & RAlt::Suspend -1
-; #SuspendExempt false
-
-#SuspendExempt
-NumpadAdd::
+if FileExist("compose.ini") == ""
 {
-	Send "^s" ; To save a changed script
-	Sleep 300 ; give it time to save the script
-	Reload
+	FileAppend "
+	(
+	; This file is used to create compose key pairs
+	; For details and specification, refer to https://github.com/CarrieForle/xarty
+	
+	[compose-keypair]
+	btw=By the way
+	name=CarrieForle
+	lol=(ﾟ∀。)
+	)", "compose.ini", "UTF-8"
 }
 
-NumpadSub::Suspend -1
+composeKeypairArray := StrSplit(IniRead("compose.ini", "compose-keypair"), "`n")
+
+wordList := Map()
+for val in composeKeypairArray
+{
+	keypair := StrSplit(val, "=",, 2)
+	if RegExMatch(keypair[2], "^(`'|`")(.+)\1$", &match)
+	{
+		keypair[2] := match[2]
+	}
+	wordList.Set keypair[1], keypair[2]
+}
+composeKeypairArray := ""
+
+#SuspendExempt
+RAlt & LAlt::
+LAlt & RAlt::Suspend -1
 #SuspendExempt false
+
+; #SuspendExempt
+; NumpadAdd::
+; {
+	; Send "^s"
+	; Sleep 300
+	; Reload
+; }
+
+; NumpadSub::Suspend -1
+; #SuspendExempt false
 
 if GetKeyState("CapsLock", "T")
 	SetCapsLockState "AlwaysOn"
 else
 	SetCapsLockState "AlwaysOff"
 
-Numpad0::debug isEnteringExtendLayer1
-Numpad1::debug isEnteringExtendLayer2
-NumpadMult::KeyHistory
-NumpadDiv::debug A_TickCount - timeSincePressed
-
 #HotIf GetKeyState("CapsLock")
-	; EPKL has support for layer 4, 
-	; but seriously, why do we need that many layers?
 	Shift & Ctrl::return
 	Ctrl & Shift::return
 	global isEnteringExtendLayer1 := false
@@ -51,7 +75,7 @@ CapsLock & Shift::
 	global isEnteringExtendLayer2 := false
 }
 
-#HotIf (A_PriorKey == "LShift" || A_PriorKey == "RShift") && A_TickCount - timeSincePressed <= intervalAllowedForExtendLayerActivation
+#HotIf (A_PriorKey == "LShift" || A_PriorKey == "RShift") && A_TickCount - timeSinceExtendPrestart <= intervalAllowedForExtendLayerActivation
 CapsLock::
 {
 	global isEnteringExtendLayer1 := true
@@ -66,7 +90,7 @@ CapsLock & Ctrl::
 	global isEnteringExtendLayer2 := true
 }
 
-#HotIf (A_PriorKey == "LControl" || A_PriorKey == "RControl") && A_TickCount - timeSincePressed <= intervalAllowedForExtendLayerActivation
+#HotIf (A_PriorKey == "LControl" || A_PriorKey == "RControl") && A_TickCount - timeSinceExtendPrestart <= intervalAllowedForExtendLayerActivation
 CapsLock::
 {
 	global isEnteringExtendLayer1 := false
@@ -82,7 +106,7 @@ CapsLock::
 }
 
 Ctrl::
-Shift::global timeSincePressed := A_TickCount
+Shift::global timeSinceExtendPrestart := A_TickCount
 
 sc029::`
 sc002::1
@@ -317,3 +341,69 @@ sc032::+
 sc033::-
 sc034::=
 sc035::return
+
+#HotIf
+oldBuffer := ""
+ih := InputHook("V L10")
+
+RWin::onKeyDown(ih, 0x5c, 0x15c)
+*^Backspace::
+{
+	global ih
+	Send "{Blind}{Backspace}"
+	ih.Stop()
+}
+
+onChar(ih, ch)
+{
+	global timeSinceLastKey := A_TickCount
+}
+
+onKeyDown(ih, vk, sc)
+{
+	global timeSinceLastKey
+	
+	if vk == 8
+	{
+		global oldBuffer
+		if ih.Input == "" && oldBuffer != ""
+			oldBuffer := SubStr(oldBuffer, 1, StrLen(oldBuffer) - 1)
+	}
+	
+	else if A_TickCount - timeSinceLastKey > intervalAllowedForComposeValidation
+	{
+		ih.Stop()
+	}
+	
+	else if A_TickCount - timeSinceLastKey <= intervalAllowedForComposeValidation
+	{
+		global wordlist
+		inpBuffer := oldBuffer . ih.Input
+		for key, val in wordList
+		{
+			if key == SubStr(inpBuffer, -StrLen(key))
+			{
+				ih.Stop()
+				Send "{Backspace " StrLen(key) "}"
+				SendText val
+				break
+			}
+		}
+	}
+}
+
+onEnd(ih)
+{
+	global oldBuffer
+	if ih.EndReason == "Stopped"
+		oldBuffer := ""
+	else
+		oldBuffer := ih.Input
+	ih.Start()
+}
+
+ih.OnKeyDown := onKeyDown
+ih.OnEnd := onEnd
+ih.OnChar := onChar
+ih.KeyOpt("{backspace}", "N")
+ih.Start()
