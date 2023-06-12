@@ -1,4 +1,4 @@
-﻿#Requires AutoHotkey >= 2
+#Requires AutoHotkey >= 2
 A_MaxHotkeysPerInterval := 150
 A_HotkeyInterval := 1000
 SetMouseDelay 1
@@ -7,9 +7,9 @@ SetKeyDelay -1
 ProcessSetPriority "A"
 FileEncoding "UTF-8" ; https://www.autohotkey.com/docs/v2/lib/File.htm#Encoding
 
-extendKey := "CapsLock"
-extendLayer1Key := "Shift"
-extendLayer2Key := "Ctrl"
+; extendKey := "CapsLock"
+; extendLayer1Key := "Shift"
+; extendLayer2Key := "Ctrl"
 intervalAllowedForComposeValidation := 2000,
 timeSinceLastKey := -intervalAllowedForComposeValidation - 1,
 intervalAllowedForExtendLayerActivation := 150,
@@ -52,7 +52,8 @@ Loop Read "compose.txt"
 		wordList.Set keypair[2], keypair[3]
 	}
 }
-VarSetStrCapacity &composeKeypairArray, 0
+
+VarSetStrCapacity &keypair, 0
 
 #SuspendExempt
 #Hotif A_IsSuspended
@@ -234,13 +235,10 @@ CapsLock & sc019::Del
 CapsLock & sc01a::WheelLeft
 CapsLock & sc01b::WheelRight
 
-CapsLock & sc01e::HoldKey "Alt"
-CapsLock & sc01e up::send "{blind}{Alt Up}"
+CapsLock & sc01e::Alt
 CapsLock & sc01f::WheelDown
-CapsLock & sc020::HoldKey "Shift"
-CapsLock & sc020 up::send "{blind}{Shift Up}"
-CapsLock & sc021::HoldKey "Ctrl"
-CapsLock & sc021 up::send "{blind}{Ctrl Up}"
+CapsLock & sc020::Shift
+CapsLock & sc021::Ctrl
 CapsLock & sc022::MouseMove 0, 20,, "R"
 CapsLock & sc023::PgDn
 CapsLock & sc024::Left
@@ -377,6 +375,7 @@ RWin::onKeyDown(ih, 0x5c, 0x15c)
 	global ih
 	Send "{Blind}{Backspace}"
 	ih.Stop()
+	ih.Start()
 }
 
 onChar(ih, ch)
@@ -398,6 +397,7 @@ onKeyDown(ih, vk, sc)
 	else if A_TickCount - timeSinceLastKey > intervalAllowedForComposeValidation
 	{
 		ih.Stop()
+		ih.Start()
 	}
 	
 	else if A_TickCount - timeSinceLastKey <= intervalAllowedForComposeValidation
@@ -411,6 +411,7 @@ onKeyDown(ih, vk, sc)
 				ih.Stop()
 				Send "{Backspace " StrLen(key) "}"
 				SendText val
+				ih.Start()
 				break
 			}
 		}
@@ -421,7 +422,6 @@ onEnd(ih)
 {
 	global oldBuffer
 	oldBuffer := ih.EndReason == "Stopped" ? "" : ih.Input
-	ih.Start()
 }
 
 ih.OnKeyDown := onKeyDown,
