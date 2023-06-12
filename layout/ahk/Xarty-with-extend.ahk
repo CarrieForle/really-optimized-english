@@ -191,8 +191,7 @@ HoldKey(key) {
 
 #HotIf !isEnteringExtendLayer1 && !isEnteringExtendLayer2
 
-CapsLock & Esc::HoldKey "CapsLock"
-CapsLock & Esc up::Send "{blind}{CapsLock Up}"
+CapsLock & Esc::CapsLock
 CapsLock & F1::HoldKey "Media_Play_Pause"
 CapsLock & F1 up::Send "{blind}{Media_Play_Pause Up}"
 CapsLock & F2::HoldKey "Media_Prev"
