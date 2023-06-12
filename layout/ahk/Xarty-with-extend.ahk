@@ -1,14 +1,15 @@
-#Requires AutoHotkey >= 2
+﻿#Requires AutoHotkey >= 2
 A_MaxHotkeysPerInterval := 150
 A_HotkeyInterval := 1000
 SetMouseDelay 1
 SetDefaultMouseSpeed 2
 SetKeyDelay -1
 ProcessSetPriority "A"
+FileEncoding "UTF-8" ; https://www.autohotkey.com/docs/v2/lib/File.htm#Encoding
 
-; extendKey := "CapsLock"
-; extendLayer1Key := "Shift"
-; extendLayer2Key := "Ctrl"
+extendKey := "CapsLock"
+extendLayer1Key := "Shift"
+extendLayer2Key := "Ctrl"
 intervalAllowedForComposeValidation := 2000,
 timeSinceLastKey := -intervalAllowedForComposeValidation - 1,
 intervalAllowedForExtendLayerActivation := 150,
@@ -16,35 +17,47 @@ timeSinceExtendPrestart := -intervalAllowedForExtendLayerActivation - 1,
 isEnteringExtendLayer1 := false,
 isEnteringExtendLayer2 := false
 
-if FileExist("compose.ini") == ""
+if FileExist("compose.txt") == ""
 {
 	FileAppend "
 	(
 	; This file is used to create compose key pairs
-	; For details and specification, refer to https://github.com/CarrieForle/xarty
+	; For details and specification, refer to https://github.com/CarrieForle/xarty/wiki/Xarty-with-AHK#composetxt
 	
-	[compose-keypair]
-	btw=By the way
-	name=CarrieForle
-	lol=(ﾟ∀。)
-	)", "compose.ini", "UTF-8"
+	=btw=By the way
+	=name=CarrieForle
+	=lol=(ﾟ∀。)
+	)", "compose.txt"
 }
-
-composeKeypairArray := StrSplit(IniRead("compose.ini", "compose-keypair"), "`n")
 
 wordList := Map()
-for val in composeKeypairArray
+Loop Read "compose.txt"
 {
-	keypair := StrSplit(val, "=",, 2)
-	if RegExMatch(keypair[2], "^(`'|`")(.+)\1$", &match)
+	if A_LoopReadLine == ""
+		continue
+	delimiterChar := SubStr(A_LoopReadLine, 1, 1)
+	if delimiterChar == ";" ||
+	delimiterChar == "`n" ||
+	delimiterChar == A_Tab ||
+	delimiterChar == A_Space
+		continue
+	keypair := StrSplit(A_LoopReadLine, delimiterChar,, 3)
+	if keypair.Length < 3 || keypair[2] == "" ||keypair[3] == ""
 	{
-		keypair[2] := match[2]
+		if "No" == MsgBox(A_LoopReadLine " is not a valid compose keypair.`n`nClick `"Yes`" to cuntinue and ignore.`nClick `"No`" to terminate the script.", "Error in compose.txt", 4)
+			ExitApp
 	}
-	wordList.Set keypair[1], keypair[2]
+	else
+	{
+		wordList.Set keypair[2], keypair[3]
+	}
 }
-VarSetStrCapacity(&composeKeypairArray, 0)
+VarSetStrCapacity &composeKeypairArray, 0
 
 #SuspendExempt
+#Hotif A_IsSuspended
+CapsLock::CapsLock ; for CapsLock to be toggleabde while suspending
+#HotIf
 RAlt & LAlt::
 LAlt & RAlt::Suspend -1
 #SuspendExempt false
@@ -326,7 +339,7 @@ sc015::return
 sc016::'
 ;'
 sc017::"
-; "
+;"
 sc018::\
 sc019::return
 sc01a::return
