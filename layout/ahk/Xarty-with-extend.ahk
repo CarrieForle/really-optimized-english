@@ -30,7 +30,12 @@ if FileExist("compose.txt") == ""
 	)", "compose.txt"
 }
 
-wordList := Map()
+wordList := Array()
+wordList.Length := wordList.Capacity := 10
+
+loop wordList.Length
+	wordList[A_Index] := Map()
+
 Loop Read "compose.txt"
 {
 	if A_LoopReadLine == ""
@@ -47,9 +52,14 @@ Loop Read "compose.txt"
 		if "No" == MsgBox(A_LoopReadLine " is not a valid compose keypair.`n`nClick `"Yes`" to cuntinue and ignore.`nClick `"No`" to terminate the script.", "Error in compose.txt", 4)
 			ExitApp
 	}
+	else if StrLen(keypair[2]) > 10
+	{
+		if "No" == MsgBox(A_LoopReadLine " has the key too long (> 10).`n`nClick `"Yes`" to cuntinue and ignore.`nClick `"No`" to terminate the script.", "Error in compose.txt", 4)
+			ExitApp
+	}
 	else
 	{
-		wordList.Set keypair[2], keypair[3]
+		wordList[11 - StrLen(keypair[2])].Set(keypair[2], keypair[3])
 	}
 }
 
@@ -61,6 +71,8 @@ CapsLock::CapsLock ; for CapsLock to be toggleabde while suspending
 #HotIf
 RAlt & LAlt::
 LAlt & RAlt::Suspend -1
+^+5::Reload
+^+`::ExitApp
 #SuspendExempt false
 
 ; #SuspendExempt
@@ -184,7 +196,6 @@ sc034::.
 sc035::/
 
 HoldKey(key) {
-	SetKeyDelay -1
 	if !GetKeyState(key)
 		Send "{Blind}{" key " DownR}"
 }
@@ -366,15 +377,37 @@ sc035::return
 
 #HotIf
 oldBuffer := ""
-ih := InputHook("V L10")
+ih := InputHook("V L10", "{Left}{Right}{Home}{End}")
 
-RWin::onKeyDown(ih, 0x5c, 0x15c)
+*RWin::
+{	
+	if !GetKeyState("RWin")
+		onKeyDown(ih, 0x5c, 0x15c)
+}
+
+$!Backspace::
 *^Backspace::
 {
-	global ih
-	Send "{Blind}{Backspace}"
-	ih.Stop()
-	ih.Start()
+	Send "{Blind}{Backspace DownR}"
+	if !GetKeyState("Backspace")
+	{
+		ih.Stop()
+		ih.Start()
+	}
+}
+$Backspace::
+$+Backspace::
+{
+	Send "{Blind}{Backspace DownR}"
+	global oldBuffer
+	if ih.Input == "" && oldBuffer != ""
+		oldBuffer := SubStr(oldBuffer, 1, StrLen(oldBuffer) - 1)
+}
+*Backspace up::Send "{Blind}{Backspace up}"
+
+RCtrl::
+{
+	MsgBox(oldBuffer "`n" ih.Input "`n" ih.InProgress)
 }
 
 onChar(ih, ch)
@@ -386,14 +419,7 @@ onKeyDown(ih, vk, sc)
 {
 	global timeSinceLastKey
 	
-	if vk == 8
-	{
-		global oldBuffer
-		if ih.Input == "" && oldBuffer != ""
-			oldBuffer := SubStr(oldBuffer, 1, StrLen(oldBuffer) - 1)
-	}
-	
-	else if A_TickCount - timeSinceLastKey > intervalAllowedForComposeValidation
+	if A_TickCount - timeSinceLastKey > intervalAllowedForComposeValidation
 	{
 		ih.Stop()
 		ih.Start()
@@ -401,17 +427,19 @@ onKeyDown(ih, vk, sc)
 	
 	else if A_TickCount - timeSinceLastKey <= intervalAllowedForComposeValidation
 	{
-		global wordlist
 		inpBuffer := oldBuffer . ih.Input
-		for key, val in wordList
+		for words in wordList
 		{
-			if key == SubStr(inpBuffer, -StrLen(key))
+			for key, val in words
 			{
-				ih.Stop()
-				Send "{Backspace " StrLen(key) "}"
-				SendText val
-				ih.Start()
-				break
+				if key == SubStr(inpBuffer, -StrLen(key))
+				{
+					ih.Stop()
+					Send "{Backspace " StrLen(key) "}"
+					SendText val
+					ih.Start()
+					return
+				}
 			}
 		}
 	}
@@ -420,11 +448,18 @@ onKeyDown(ih, vk, sc)
 onEnd(ih)
 {
 	global oldBuffer
-	oldBuffer := ih.EndReason == "Stopped" ? "" : ih.Input
+	if ih.EndReason == "Max"
+	{
+		oldBuffer := ih.Input
+		ih.Start()
+	}
+	else
+	{
+		oldBuffer := ""
+	}
 }
 
 ih.OnKeyDown := onKeyDown,
 ih.OnEnd := onEnd,
 ih.OnChar := onChar
-ih.KeyOpt("{backspace}", "N")
 ih.Start()
