@@ -1,3 +1,10 @@
+#SuspendExempt true
+RAlt & LAlt::
+LAlt & RAlt::Suspend -1
+^+5::Reload
+^+`::ExitApp
+#SuspendExempt false
+
 sc029::`
 sc002::1
 sc003::2
