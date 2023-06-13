@@ -49,12 +49,12 @@ Loop Read "compose.txt"
 	keypair := StrSplit(A_LoopReadLine, delimiterChar,, 3)
 	if keypair.Length < 3 || keypair[2] == "" ||keypair[3] == ""
 	{
-		if "No" == MsgBox(A_LoopReadLine " is not a valid compose keypair.`n`nClick `"Yes`" to cuntinue and ignore.`nClick `"No`" to terminate the script.", "Error in compose.txt", 4)
+		if "No" == MsgBox(A_LoopReadLine " is not a valid compose keypair.`n`nClick `"Yes`" to cuntinue and ignore this keypair.`nClick `"No`" to terminate the script.", "Error in compose.txt", 4)
 			ExitApp
 	}
 	else if StrLen(keypair[2]) > 10
 	{
-		if "No" == MsgBox(A_LoopReadLine " has the key too long (> 10).`n`nClick `"Yes`" to cuntinue and ignore.`nClick `"No`" to terminate the script.", "Error in compose.txt", 4)
+		if "No" == MsgBox(A_LoopReadLine " has the key too long (> 10).`n`nClick `"Yes`" to cuntinue and ignore this keypair.`nClick `"No`" to terminate the script.", "Error in compose.txt", 4)
 			ExitApp
 	}
 	else
