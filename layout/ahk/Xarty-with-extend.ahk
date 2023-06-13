@@ -54,7 +54,7 @@ Loop Read "compose.txt"
 	}
 	else if StrLen(keypair[2]) > 10
 	{
-		if "No" == MsgBox(A_LoopReadLine " has the key too long (> 10).`n`nClick `"Yes`" to cuntinue and ignore this keypair.`nClick `"No`" to terminate the script.", "Error in compose.txt", 4)
+		if "No" == MsgBox(A_LoopReadLine " is too long for a key (> 10).`n`nClick `"Yes`" to cuntinue and ignore this keypair.`nClick `"No`" to terminate the script.", "Error in compose.txt", 4)
 			ExitApp
 	}
 	else
