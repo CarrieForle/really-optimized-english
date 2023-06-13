@@ -382,8 +382,7 @@ ih := InputHook("V L10", "{Left}{Right}{Home}{End}")
 ~!Backspace::
 ~*^Backspace::
 {
-	if A_PriorHotKey != "~!Backspace" &&
-	A_PriorHotKey != "~*^Backspace"
+	if A_PriorHotKey != "~!Backspace" && A_PriorHotKey != "~*^Backspace"
 	{
 		ih.Stop()
 		ih.Start()
