@@ -389,11 +389,6 @@ ih := InputHook("V L10", "{Left}{Right}{Home}{End}")
 	}
 }
 
-; RCtrl::
-; {
-	; MsgBox(oldBuffer "`n" ih.Input "`n" ih.InProgress)
-; }
-
 onChar(ih, ch)
 {
 	global timeSinceLastKey := A_TickCount
