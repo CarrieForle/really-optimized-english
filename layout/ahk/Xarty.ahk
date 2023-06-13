@@ -1,3 +1,8 @@
+A_MaxHotkeysPerInterval := 150
+A_HotkeyInterval := 1000
+SetKeyDelay -1
+ProcessSetPriority "A"
+
 #SuspendExempt true
 RAlt & LAlt::
 LAlt & RAlt::Suspend -1
