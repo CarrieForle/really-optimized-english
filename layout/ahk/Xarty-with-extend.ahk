@@ -75,17 +75,6 @@ LAlt & RAlt::Suspend -1
 ^+`::ExitApp
 #SuspendExempt false
 
-; #SuspendExempt
-; NumpadAdd::
-; {
-	; Send "^s"
-	; Sleep 300
-	; Reload
-; }
-
-; NumpadSub::Suspend -1
-; #SuspendExempt false
-
 if GetKeyState("CapsLock", "T")
 	SetCapsLockState "AlwaysOn"
 else
@@ -257,9 +246,7 @@ CapsLock & sc026::Right
 CapsLock & sc027::BackSpace
 CapsLock & sc028::HoldKey "AppsKey"
 CapsLock & sc028 up::Send "{blind}{AppsKey Up}"
-;Co_BS::Browser_Favorites
 
-;Co_LG::WheelLeft
 CapsLock & sc02c::^z
 CapsLock & sc02d::^x
 CapsLock & sc02e::^c
@@ -381,34 +368,31 @@ ih := InputHook("V L10", "{Left}{Right}{Home}{End}")
 
 *RWin::
 {	
-	if !GetKeyState("RWin")
+	if A_PriorHotKey !== ThisHotKey
 		onKeyDown(ih, 0x5c, 0x15c)
 }
 
-$!Backspace::
-*^Backspace::
+~Backspace::
+~+Backspace::
 {
-	Send "{Blind}{Backspace DownR}"
-	if !GetKeyState("Backspace")
+	global oldBuffer
+	if ih.Input == "" && oldBuffer != ""
+		oldBuffer := SubStr(oldBuffer, 1, StrLen(oldBuffer) - 1)
+}
+~!Backspace::
+~^Backspace::
+{
+	if A_PriorHotKey != "~!Backspace" && A_PriorHotKey != "~^Backspace"
 	{
 		ih.Stop()
 		ih.Start()
 	}
 }
-$Backspace::
-$+Backspace::
-{
-	Send "{Blind}{Backspace DownR}"
-	global oldBuffer
-	if ih.Input == "" && oldBuffer != ""
-		oldBuffer := SubStr(oldBuffer, 1, StrLen(oldBuffer) - 1)
-}
-*Backspace up::Send "{Blind}{Backspace up}"
 
-RCtrl::
-{
-	MsgBox(oldBuffer "`n" ih.Input "`n" ih.InProgress)
-}
+; RCtrl::
+; {
+	; MsgBox(oldBuffer "`n" ih.Input "`n" ih.InProgress)
+; }
 
 onChar(ih, ch)
 {
