@@ -38,5 +38,5 @@ I'm writing an AHK script that not only implements the layout, but also **Extend
 
 ## Trivia
 
-As **nobody except me** is using the layout. I'll be posting an update of my new pb for using the layout.
+As **nobody except me** is using the layout. I'll be posting an update of my new PB for using the layout.
 ![screenshot on monkeytype.com](https://github.com/CarrieForle/xarty/assets/53133715/34963b50-c6c8-4c15-b7a1-4a39323fe029)
