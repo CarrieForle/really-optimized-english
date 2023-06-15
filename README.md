@@ -15,19 +15,23 @@ Xarty is a keyboard layout aimed for typing English in a comfortable and quick m
 The key placement is heavily based on [first20hours/google-10000-english](https://github.com/first20hours/google-10000-english).
 
 ## Downloads
+
 See [Releases](https://github.com/CarrieForle/xarty/releases).
 
 ## Installing
+
 See [Wiki](https://github.com/CarrieForle/xarty/wiki/How-to-install).
 
 ## Why is the layout *like this?*
+
 1. Typing with pinkies is **awful**, so this is a six-finger (index, middle, ring) dominant layout.
 2. The priority is most used keys being reachable with the the 6 fingers while being as comfortable with [Bigram](https://en.wikipedia.org/wiki/Bigram). The best scenario is the 2 keys being typed with separate hands. The worst is it have to be typed with the same finger, followed by pinky to ring and up pinky to the down outmost index and vise versa. The layout is arranged in a way to have a balance between most common [Bigrams](https://en.wikipedia.org/wiki/Bigram) typed with different hands and most common keys typed with the 6 fingers.
 3. The left hand, in theory, will work more in the long term. Precisely, about `150 per 10,000 keys pressed`. That is, if you do not consider the punctuation. While there seems to have no agreement in punctuation frequency, after I examined the different researches I found on the internet, somewhere in `230 ~ 300 per 10,000 keys pressed` is reasonable. You might think this turns out that the layout is, in fact, putting more pressure on the right hand since every punctuation except exclamation mark is on the right, and you will be right. Unfortunately, this is the best I can get without breaking point \#2 or entirely rearrange the layout.
 
 ## Why ANSI?
+
 I'm using ANSI.
 
-## TO-DO
-- Update reasoning for layout arrangement better (sorry I suck at English)
-- Find potential improvement for the layout with fewest change possible
+## The current state
+
+I'm writing an AHK script that not only implements the layout, but also **Extend layers** and **Compose** because there is an bug in EPKL that conflicts with the Chinese input method I'm using. The script is aimed to resolve the problem and while not compromising the 2 features I used in EPKL.
