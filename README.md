@@ -1,8 +1,9 @@
 # Xarty - an ecgonomic layout attempt
 
-![Xarty the keyboard layout](https://github.com/CarrieForle/xarty/assets/53133715/ba05772a-2144-490f-b4fa-d3e74eb3f9b2)
+![Xarty-the-layout](https://github.com/CarrieForle/xarty/assets/53133715/ec364811-a7a1-4aa1-abd5-59597699a80f)
 
 ```
+
 ` 1 2 3 4 5 6 7 8 9 0 - = 
    V H S G B J M O U ; [ ] \
     X A R T Y K N E I W '
