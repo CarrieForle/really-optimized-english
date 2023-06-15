@@ -35,3 +35,8 @@ I'm using ANSI.
 ## The current state
 
 I'm writing an AHK script that not only implements the layout, but also **Extend layers** and **Compose** because there is an bug in EPKL that conflicts with the Chinese input method I'm using. The script is aimed to resolve the problem and while not compromising the 2 features I used in EPKL.
+
+## Trivia
+
+As **nobody except me** is using the layout. I'll be posting an update of my new pb for using the layout.
+![screenshot on monkeytype.com](https://github.com/CarrieForle/xarty/assets/53133715/34963b50-c6c8-4c15-b7a1-4a39323fe029)
