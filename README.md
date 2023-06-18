@@ -39,5 +39,6 @@ I'm writing an AHK script that not only implements the layout, but also **Extend
 ## Trivia
 
 As **nobody except me** is using the layout. I'll be posting an update of my new PB for using the layout.
-![Screenshot on monkeytype.com](https://github.com/CarrieForle/xarty/assets/53133715/a2f66dc3-fdcd-453b-b09b-e5a8f02cb1b9)
+![Screenshot on monkeytype.com 100% accracy](https://github.com/CarrieForle/xarty/assets/53133715/a2f66dc3-fdcd-453b-b09b-e5a8f02cb1b9)
+![Screenshot on monkeytype.com](https://github.com/CarrieForle/xarty/assets/53133715/21b6778f-ed35-4489-b869-0ef8930f74d8)
 
