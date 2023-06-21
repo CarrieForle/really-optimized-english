@@ -1,27 +1,47 @@
-﻿#Requires AutoHotkey >= 2
+#Requires AutoHotkey >= 2
 A_MaxHotkeysPerInterval := 150
 A_HotkeyInterval := 1000
 SetMouseDelay 1
 SetDefaultMouseSpeed 2
 SetKeyDelay -1
+SendMode "Event"
 ProcessSetPriority "A"
 FileEncoding "UTF-8" ; https://www.autohotkey.com/docs/v2/lib/File.htm#Encoding
 
 ; extendKey := "CapsLock"
 ; extendLayer1Key := "Shift"
 ; extendLayer2Key := "Ctrl"
-intervalAllowedForComposeValidation := 2000,
-timeSinceLastKey := -intervalAllowedForComposeValidation - 1,
-intervalAllowedForExtendLayerActivation := 150,
-timeSinceExtendPrestart := -intervalAllowedForExtendLayerActivation - 1,
-modifierHotKey := ""
+
+if FileExist("xarty_config.ini") == ""
+{
+	FileAppend "
+	(
+	[xarty-global]
+
+	; Upon the Compose sequence complete typing, 
+	; the window for you to press Compose key
+	; for the ranslation to begin. (in millisecond)
+	
+	; This property should be a positive integer, 
+	; otherwise invalid.
+	intervalAllowedForComposeValidation = 4800 
+
+	; When you press and release a modifer key, 
+	; the window for you to press extend key that
+	; will still acdtivate a extend layer. (in millisecond)
+	
+	; This property should be a positive integer, 
+	; otherwise invalid.
+	intervalAllowedForExtendLayerActivation = 250
+	)", "xarty_config.ini", "UTF-16"
+}
 
 if FileExist("compose.txt") == ""
 {
 	FileAppend "
 	(
 	; This file is used to create compose key pairs
-	; For details and specification, refer to https://github.com/CarrieForle/xarty/wiki/Xarty-with-AHK#composetxt
+	; For details, specification, and guide of modification, refer to https://github.com/CarrieForle/xarty/wiki/Xarty-with-AHK#composetxt
 	
 	=btw=By the way
 	=name=CarrieForle
@@ -29,8 +49,27 @@ if FileExist("compose.txt") == ""
 	)", "compose.txt"
 }
 
+try
+{
+	intervalAllowedForComposeValidation := Integer(IniRead("xarty_config.ini", "xarty-global", "intervalAllowedForComposeValidation")),
+	intervalAllowedForExtendLayerActivation := Integer(IniRead("xarty_config.ini", "xarty-global", "intervalAllowedForExtendLayerActivation"))
+	
+	if intervalAllowedForComposeValidation <= 0 || intervalAllowedForExtendLayerActivation <= 0
+		throw ValueError("")
+}
+catch Error as e
+{
+	MsgBox e.Message . "Invalid properties found in xarty_config.ini.`nThe program will be terminated."
+	ExitApp
+}
+
+timeSinceLastKey := -intervalAllowedForComposeValidation - 1,
+timeSinceExtendPrestart := -intervalAllowedForExtendLayerActivation - 1,
+maximumComposeKeyLength := 20,
+modifierHotKey := ""
+
 wordList := Array()
-wordList.Length := wordList.Capacity := 10
+wordList.Length := wordList.Capacity := maximumComposeKeyLength
 
 loop wordList.Length
 	wordList[A_Index] := Map()
@@ -51,14 +90,14 @@ Loop Read "compose.txt"
 		if "No" == MsgBox(A_LoopReadLine " is not a valid compose keypair.`n`nClick `"Yes`" to cuntinue and ignore this keypair.`nClick `"No`" to terminate the script.", "Error in compose.txt", 4)
 			ExitApp
 	}
-	else if StrLen(keypair[2]) > 10
+	else if StrLen(keypair[2]) > maximumComposeKeyLength
 	{
 		if "No" == MsgBox(A_LoopReadLine " is too long for a key (> 10).`n`nClick `"Yes`" to cuntinue and ignore this keypair.`nClick `"No`" to terminate the script.", "Error in compose.txt", 4)
 			ExitApp
 	}
 	else
 	{
-		wordList[11 - StrLen(keypair[2])].Set(keypair[2], keypair[3])
+		wordList[maximumComposeKeyLength - StrLen(keypair[2]) + 1].Set(keypair[2], keypair[3])
 	}
 }
 
@@ -70,61 +109,55 @@ else
 	SetCapsLockState "AlwaysOff"
 
 #InputLevel 1
-#HotIf GetKeyState("CapsLock")
-Shift & Ctrl::
-Ctrl & Shift::
-{
-	SendEvent "{vk3c Up}{vk3d Up}{vk3e Down}"
-	KeyWait "CapsLock"
-}
 
-#HotIf modifierHotKey == "Shift up" && A_TickCount - timeSinceExtendPrestart <= intervalAllowedForExtendLayerActivation
+#HotIf modifierHotKey == "~Shift up" && A_TickCount - timeSinceExtendPrestart <= intervalAllowedForExtendLayerActivation
 CapsLock::
 {
-	Send "{vk3c Up}{vk3d Down}{vk3e Up}"
-	KeyWait "CapsLock"
+	SendEvent("{vk3c DownR}{vk3d Up}{vk3e Up}"),
+	KeyWait("CapsLock")
 }
 
-#HotIf modifierHotKey == "Ctrl up" && A_TickCount - timeSinceExtendPrestart <= intervalAllowedForExtendLayerActivation
+#HotIf modifierHotKey == "~Ctrl up" && A_TickCount - timeSinceExtendPrestart <= intervalAllowedForExtendLayerActivation
 CapsLock::
 {
-	Send "{vk3c Up}{vk3d Down}{vk3e Up}"
-	KeyWait "CapsLock"
+	SendEvent("{vk3c Up}{vk3d DownR}{vk3e Up}"),
+	KeyWait("CapsLock")
 }
 
-#HotIf !GetKeyState("CapsLock")
-Ctrl up::
-Shift up::
+#HotIf !GetKeyState("CapsLock", "P")
+~Ctrl up::
+~Shift up::
 {
 	global
 	timeSinceExtendPrestart := A_TickCount,
 	modifierHotKey := ThisHotKey
 }
 
+#HotIf
 CapsLock & Shift::
 +CapsLock::
 {
-	SendEvent "{vk3c Down}{vk3d Up}{vk3e Up}"
-	KeyWait "CapsLock"
+	SendEvent("{vk3c DownR}{vk3d Up}{vk3e Up}"),
+	KeyWait("CapsLock")
 }
 
 CapsLock & Ctrl::
 ^CapsLock::
 {
-	SendEvent "{vk3c Up}{vk3d Down}{vk3e Up}"
-	KeyWait "CapsLock"
+	SendEvent("{vk3c Up}{vk3d DownR}{vk3e Up}"),
+	KeyWait("CapsLock")
 }
 
 ^+CapsLock::
-~*CapsLock up::
+~CapsLock::
 {
-	SendEvent "{vk3c Up}{vk3d Up}{vk3e Up}"
+	SendEvent("{vk3c Up}{vk3d Up}{vk3e DownR}"),
+	KeyWait("CapsLock")
 }
 
-CapsLock::
+~CapsLock up::
 {
-	SendEvent "{vk3c Up}{vk3d Up}{vk3e Down}"
-	KeyWait "CapsLock"
+	SendEvent "{vk3c Up}{vk3d Up}{vk3e Up}"
 }
 
 #SuspendExempt
@@ -133,22 +166,22 @@ CapsLock::CapsLock ; for CapsLock to be toggleabde while suspending
 #HotIf
 RAlt & LAlt::
 LAlt & RAlt::Suspend -1
-^+5::
+^+sc006::
 {
-	SendEvent "{vk3c Up}{vk3d Up}"
+	SendEvent "{vk3c Up}{vk3d Up}{vk3e Up}"
 	Reload
 }
-^+`::ExitApp
+^+sc029::ExitApp
 #SuspendExempt false
 #InputLevel 0
 
 HoldKey(key) {
-	Send "{Blind}{" key " DownR}"
+	SendInput "{Blind}{" key " DownR}"
 	KeyWait key, "L"
 }
 
 HoldKeyNormal(key) {
-	Send "{Blind}{" key " Down}"
+	SendInput "{Blind}{" key " Down}"
 	KeyWait key, "L"
 }
 
@@ -284,7 +317,7 @@ vk3e & sc010::Esc
 vk3e & sc011::WheelUp
 vk3e & sc012::Browser_Back
 vk3e & sc013::Browser_Forward
-vk3e & sc014::MouseMove 0, -20,, "R"
+vk3e & sc014::SendInput "{Click 0 -20 0 Rel}"
 vk3e & sc015::PgUp
 vk3e & sc016::Home
 vk3e & sc017::Up
@@ -297,7 +330,7 @@ vk3e & sc01e::Alt
 vk3e & sc01f::WheelDown
 vk3e & sc020::Shift
 vk3e & sc021::Ctrl
-vk3e & sc022::MouseMove 0, 20,, "R"
+vk3e & sc022::SendInput "{Click 0 20 0 Rel}"
 vk3e & sc023::PgDn
 vk3e & sc024::Left
 vk3e & sc025::Down
@@ -315,8 +348,8 @@ vk3e & sc030::Ins
 vk3e & sc031::LButton
 vk3e & sc032::MButton
 vk3e & sc033::RButton
-vk3e & sc034::MouseMove -42, 0,, "R"
-vk3e & sc035::MouseMove 42, 0,, "R"
+vk3e & sc034::SendInput "{Click -42 0 0 Rel}"
+vk3e & sc035::SendInput "{Click 42 0 0 Rel}"
 
 vk3e & Enter::^BackSpace
 vk3e & Space::Enter
@@ -370,13 +403,14 @@ sc033::,
 sc034::.
 sc035::/
 
+ih := InputHook("V L" . maximumComposeKeyLength, "{Left}{Up}{Right}{Down}{Home}{PgUp}{End}{PgDn}"),
 oldBuffer := ""
-ih := InputHook("V L10", "{Left}{Right}{Home}{End}")
 
-*RWin::
+sc15d::
 {	
 	if A_PriorHotKey !== ThisHotKey
-		onKeyDown(ih, 0x5c, 0x15c)
+		onKeyDown(ih, 0x5d, 0x15d)
+	KeyWait "sc15d"
 }
 
 ~Backspace::
@@ -391,7 +425,7 @@ ih := InputHook("V L10", "{Left}{Right}{Home}{End}")
 {
 	if A_PriorHotKey != "~!Backspace" && A_PriorHotKey != "~*^Backspace"
 	{
-		ih.Stop()
+		ih.Stop(),
 		ih.Start()
 	}
 }
@@ -407,7 +441,7 @@ onKeyDown(ih, vk, sc)
 	
 	if A_TickCount - timeSinceLastKey > intervalAllowedForComposeValidation
 	{
-		ih.Stop()
+		ih.Stop(),
 		ih.Start()
 	}
 	
@@ -420,9 +454,8 @@ onKeyDown(ih, vk, sc)
 			{
 				if key == SubStr(inpBuffer, -StrLen(key))
 				{
-					ih.Stop()
-					Send "{Backspace " StrLen(key) "}"
-					SendText val
+					ih.Stop(),
+					SendInput("{Backspace " StrLen(key) "}" val),
 					ih.Start()
 					return
 				}
@@ -447,5 +480,5 @@ onEnd(ih)
 
 ih.OnKeyDown := onKeyDown,
 ih.OnEnd := onEnd,
-ih.OnChar := onChar
+ih.OnChar := onChar,
 ih.Start()
