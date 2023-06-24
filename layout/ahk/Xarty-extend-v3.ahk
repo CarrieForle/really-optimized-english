@@ -28,7 +28,7 @@ if FileExist("xarty_config.ini") == ""
 
 	; When you press and release a modifer key, 
 	; the window for you to press extend key that
-	; will still acdtivate a extend layer. (in millisecond)
+	; will still activate a extend layer. (in millisecond)
 	
 	; This property should be a positive integer, 
 	; otherwise invalid.
@@ -474,6 +474,8 @@ onEnd(ih)
 	}
 	else
 	{
+		if ih.EndReason == "EndKey"
+			ih.Start()
 		oldBuffer := ""
 	}
 }
