@@ -10,7 +10,9 @@
      Z F L D Q C P , . /
 ```
 
-Xarty is a keyboard layout aimed for typing English in a comfortable and quick manner, which doesn't take the compatibility to other languages and shortcut friendliness into account.<br> 
+Xarty is a keyboard layout aimed for typing English in a comfortable and quick manner, which doesn't take the compatibility to other languages and shortcut friendliness into account.<br>
+<br>
+Only Windows implementations of the layout are available.<br>
 <br>
 The key placement is heavily based on [first20hours/google-10000-english](https://github.com/first20hours/google-10000-english).
 
